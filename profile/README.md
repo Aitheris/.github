@@ -213,8 +213,6 @@ WebCross raises a takeover card automatically. The task pauses in place at the b
 
 ## About us
 
-**Aitheris** · Hangzhou, China
-
 We explore new models of human-AI collaboration and build the next generation of safe, reliable, genuinely usable on-device intelligence infrastructure.
 
 > We believe the real value of AI is not in generating endless conversation, but in stepping into the actual digital world to take the repetitive, mechanical drudgery off people's hands. Through a high-availability in-house page engine and a governance layer we keep sharpening, we work to keep critical tasks under your control — and give hands and hours back to everyone who would rather be living and creating.
@@ -444,8 +442,6 @@ WebCross 会自动唤起人工接管卡片：任务在断点处原位暂停，�
 ---
 
 ## 关于我们
-
-**Aitheris（青渚科技有限公司）** · 中国 · 杭州
 
 我们致力于探索人机协同新范式，打造安全、可靠、人人可用的下一代端侧智能基础设施。
 
