@@ -34,20 +34,27 @@ Aitheris 正在构建 **[WebCross](https://webcross.ai/zh) —— 面向网页�
 WebCross   Agent ─────────── native binding · 0 hop ───────▶ 渲染管线   3.2×
 ```
 
-在直驱引擎之上，我们补齐了一条业务链路真正跑通所需要的另外三层——**感知**（把页面压缩成模型读得懂的语义骨架）、**经验**（把跑通的路径沉淀为可复用 Workflow）、**治理**（环境隔离、过程留痕与人工接管）：
+在直驱引擎之上，我们补齐了一条业务链路真正跑通所需要的另外几层——**感知**（把页面压缩成模型读得懂的语义骨架）、**治理**（环境隔离、过程留痕与人工接管），以及内置于 WebCross Harness 的**经验层**（把跑通的路径沉淀为可复用 Workflow）。
+
+WebCross 有两条独立入口：内置的 **WebCross Harness**，以及经 Skill 接入的**第三方智能体**：
 
 ```mermaid
 flowchart TB
-    A["你的智能体 · Claude Code / Codex / 自研 Agent"]
-    B["Harness 经验层 · Workflow 沉淀与复用"]
+    H["WebCross Harness · 内置工作台<br/>自然语言下达任务"]
+    T["第三方智能体 · Claude Code / Codex<br/>经 WebCross Skill 接入"]
+    W["经验层 · Workflow 沉淀与复用<br/>（当前仅 Harness 链路支持）"]
     C["感知矩阵 · AXTree 骨架 + SemanticTree 穿透"]
     D["定制页面引擎 · native binding · 0 hop"]
     E["真实网页 · 登录态 / 动态渲染 / 表单 / iframe"]
     G["治理层 · 环境隔离 · 过程留痕 · 人工接管"]
-    A --> B --> C --> D --> E
-    G -.-> B
-    G -.-> D
+    H --> W --> C
+    T --> C
+    C --> D --> E
+    G -.- C
+    G -.- D
 ```
+
+> 两条入口共用同一套感知与引擎能力。**Workflow 的沉淀与复用目前只在 WebCross Harness 链路中提供**；经 Skill 接入的第三方智能体获得的是引擎直驱与感知能力。
 
 > **关键过程，自主可控。**
 
@@ -81,11 +88,12 @@ flowchart TB
 
 ### 04 · 专属 Harness —— 沉淀经验，越用越快
 
-告别每次从零探索的重复损耗。智能体在复杂交互中探索出的成功路径，会被沉淀为高确定性的专属经验与工作流；经验越积越厚，再次执行直达关键节点。
+告别每次从零探索的重复损耗。**在 WebCross Harness 中执行**的任务，其探索出的成功路径会被沉淀为高确定性的专属经验与工作流；经验越积越厚，再次执行直达关键节点。
 
 - 交互探索过程自动沉淀为专属经验资产
 - 复用经验直达关键路径，跳过试错探索 —— `12.5k → 2.5k tokens`，**再省约 80% Token**
 - 沉淀资产可保存、可组合、可跨任务复用
+- ℹ️ 该能力为 Harness 链路专属；经 Skill 接入的第三方智能体暂不支持 Workflow 沉淀与复用
 
 ### 05 · 环境矩阵 —— 多账号并行的安全底座
 
@@ -120,6 +128,8 @@ flowchart TB
 
 WebCross Skill 可在应用启动时或「设置」中安装到本地。安装完成后，支持 Skills 的智能体会自动识别并直接调用 WebCross —— **无需手动复制粘贴 Skill 文件，也无需 SDK 集成**。
 
+> 注：A 与 B 是两条独立入口。第三方智能体获得的是引擎直驱与感知能力；**Workflow 的沉淀与复用目前仅在 WebCross Harness 中提供**。
+
 ---
 
 ## 典型场景
@@ -132,7 +142,7 @@ WebCross Skill 可在应用启动时或「设置」中安装到本地。安装�
 | 🧾 | **批量表单填报与后台录入** | 把没有 API 的老旧系统与 SaaS 后台的重复操作交给智能体 |
 | 🏬 | **多店铺 / 多账号并行运营** | 独立指纹与出口 IP，多店铺电商、多账号社交安心并行 |
 | 📊 | **竞品与舆情定期监测** | 定时抓取、比对、落表，异常自动上报 |
-| 🔁 | **重复流程的 Workflow 化** | 把验证过的执行路径沉淀为资产，让团队复用同一条确定性链路 |
+| 🔁 | **重复流程的 Workflow 化** | 在 Harness 中把验证过的执行路径沉淀为资产，让团队复用同一条确定性链路 |
 | 🤝 | **给已有智能体加一双「手」** | 通过 Skill 让 Claude Code / Codex 直接获得真实网页的操作能力 |
 
 > 🧭 **以上只是开始——更多场景，等待你亲手挖掘。**
@@ -151,7 +161,7 @@ Playwright 和 Puppeteer 是嵌入代码的浏览器自动化库，依赖 CSS �
 
 **WebCross 是如何节省 Token 的？**
 
-三层能力叠加：① **AXTree 语义压缩**，把整页压缩成精简语义骨架，剔除样式、脚本与嵌套容器等冗余，上下文体积平均降低 85%；② **SemanticTree 结构补齐**，上下文更短的同时对页面结构的判断更精确，深层嵌套与隔离组件也可直接读取；③ **Workflow 复用**，执行过的任务沉淀为高确定性工作流，下次跳过页面探索直达关键路径，再省 80% 以上。
+三层能力叠加：① **AXTree 语义压缩**，把整页压缩成精简语义骨架，剔除样式、脚本与嵌套容器等冗余，上下文体积平均降低 85%；② **SemanticTree 结构补齐**，上下文更短的同时对页面结构的判断更精确，深层嵌套与隔离组件也可直接读取；③ **Workflow 复用**（Harness 链路专属），在 WebCross Harness 中执行过的任务沉淀为高确定性工作流，下次跳过页面探索直达关键路径，再省 80% 以上。
 
 **多个账号同时运营，会被平台风控关联吗？**
 
@@ -191,7 +201,7 @@ WebCross 会自动唤起人工接管卡片：任务在断点处原位暂停，�
 
 ## 关于我们
 
-**Aitheris** 
+**Aitheris（青渚科技有限公司）** · 中国 · 杭州
 
 我们致力于探索人机协同新范式，打造安全、可靠、人人可用的下一代端侧智能基础设施。
 
@@ -244,20 +254,27 @@ Conventional   Agent ──▶ JS adapter ──CDP / RPC──▶ Chrome ──
 WebCross       Agent ──────── native binding · 0 hop ──────▶ render pipeline    3.2×
 ```
 
-On top of that direct-drive engine we built the three other layers a real business task actually needs — **perception** (compress the page into a semantic skeleton a model can read), **experience** (distill a proven path into a reusable workflow), and **governance** (environment isolation, audit trails, human takeover):
+On top of that direct-drive engine we built the other layers a real business task actually needs — **perception** (compress the page into a semantic skeleton a model can read), **governance** (environment isolation, audit trails, human takeover), and, inside the WebCross Harness, an **experience layer** (distill a proven path into a reusable workflow).
+
+There are two independent entry points: the built-in **WebCross Harness**, and a **third-party agent** connected through the Skill:
 
 ```mermaid
 flowchart TB
-    A["Your agent · Claude Code / Codex / your own"]
-    B["Harness · workflow capture and replay"]
+    H["WebCross Harness · built-in workbench<br/>tasks in natural language"]
+    T["Third-party agent · Claude Code / Codex<br/>via the WebCross Skill"]
+    W["Experience layer · workflow capture and replay<br/>(Harness path only)"]
     C["Perception Matrix · AXTree skeleton + SemanticTree"]
     D["Custom Page Engine · native binding · 0 hop"]
     E["The live web · sessions / dynamic DOM / forms / iframes"]
     G["Governance · isolation · audit trail · human takeover"]
-    A --> B --> C --> D --> E
-    G -.-> B
-    G -.-> D
+    H --> W --> C
+    T --> C
+    C --> D --> E
+    G -.- C
+    G -.- D
 ```
+
+> Both entry points share the same perception and engine layers. **Workflow capture and replay is currently available only on the WebCross Harness path**; an agent connected through the Skill gets direct engine drive and perception.
 
 > **Critical tasks, under your control.**
 
@@ -291,11 +308,12 @@ From credentials and cookie sessions to run logs, isolation, audit trails and hu
 
 ### 04 · Dedicated Harness — distilled experience, faster every run
 
-No more re-exploring from scratch on every run. Paths the agent discovers through complex interaction are distilled into high-certainty workflows; the more it runs, the more directly it reaches the steps that matter.
+No more re-exploring from scratch on every run. Paths discovered **while running inside the WebCross Harness** are distilled into high-certainty workflows; the more it runs, the more directly it reaches the steps that matter.
 
 - Exploration is captured automatically as a reusable experience asset
 - Replay skips trial and error and goes straight to the critical path: `12.5k → 2.5k tokens`, about **80% fewer tokens**
 - Assets can be saved, composed and reused across tasks
+- ℹ️ This is specific to the Harness path; agents connected through the Skill do not get workflow capture or replay yet
 
 ### 05 · Environment Matrix — a safe base for parallel accounts
 
@@ -330,6 +348,8 @@ The agent opens the pages, searches, clicks, collects, organizes and exports loc
 
 The WebCross Skill installs locally at app launch or from Settings. After that, any Skills-capable agent discovers and calls WebCross directly — **no copying skill files by hand, no SDK integration**.
 
+> Note: A and B are separate entry points. A third-party agent gets direct engine drive and the perception layer; **workflow capture and replay currently lives only in the WebCross Harness**.
+
 ---
 
 ## Use cases
@@ -342,7 +362,7 @@ The WebCross Skill installs locally at app launch or from Settings. After that, 
 | 🧾 | **Bulk form filling & back-office entry** | Hand legacy systems and API-less SaaS admin panels to the agent |
 | 🏬 | **Multi-store / multi-account operations** | Independent fingerprints and exit IPs let stores and social accounts run in parallel safely |
 | 📊 | **Competitive & sentiment monitoring** | Scheduled collection, comparison and reporting, with alerts on anomalies |
-| 🔁 | **Turning repeat work into workflows** | Capture a proven path as an asset so the whole team replays the same deterministic chain |
+| 🔁 | **Turning repeat work into workflows** | Capture a proven path in the Harness as an asset so the whole team replays the same deterministic chain |
 | 🤝 | **Giving your agent hands** | A Skill install is all it takes for Claude Code or Codex to act on the real web |
 
 > 🧭 **This is only the beginning — the best use cases are the ones you'll find yourself.**
@@ -361,7 +381,7 @@ Playwright and Puppeteer are code-embedded automation libraries driven by CSS se
 
 **How does WebCross save tokens?**
 
-Three layers compound: ① **AXTree compression** reduces the page to a compact semantic skeleton, dropping styles, scripts and container nesting for roughly 85% less context; ② **SemanticTree completion** yields shorter context *and* a more accurate read of page structure, including deeply nested and isolated components; ③ **workflow replay** turns a completed run into a deterministic asset, skipping exploration entirely on the next run for another 80%+.
+Three layers compound: ① **AXTree compression** reduces the page to a compact semantic skeleton, dropping styles, scripts and container nesting for roughly 85% less context; ② **SemanticTree completion** yields shorter context *and* a more accurate read of page structure, including deeply nested and isolated components; ③ **workflow replay** (Harness path only) turns a run completed in the WebCross Harness into a deterministic asset, skipping exploration entirely on the next run for another 80%+.
 
 **Will running several accounts get them linked by platform risk controls?**
 
@@ -401,7 +421,7 @@ WebCross raises a takeover card automatically. The task pauses in place at the b
 
 ## About us
 
-**Aitheris**
+**Aitheris** · Hangzhou, China
 
 We explore new models of human-AI collaboration and build the next generation of safe, reliable, genuinely usable on-device intelligence infrastructure.
 
@@ -418,6 +438,6 @@ We explore new models of human-AI collaboration and build the next generation of
 <div align="center">
 <br>
 
-**Aitheris** · Make the web actually navigable for agents  ·
+**Aitheris** · 让智能体真正跑得动网页 · Make the web actually navigable for agents
 
 </div>
